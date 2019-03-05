@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	cli.AddPar("m", "Mode of operation", true);
 	cli.GetModeList()->AddPar("default", "Default mode");
 	cli.AddPar("i", "Input directory or file", true);
-	cli.AddPar("o", "Output directory or file", true);
+	cli.AddPar("o", "Output directory or file", false);
 	//cli.AddPar("v", "Verbosity level");
 	if(cli.Parse(argc, argv)!=0){
 		cli.PrintUsage(cout, "aliFitSimAnalysis");
