@@ -82,7 +82,7 @@ CFLAGS	= -Wall -ggdb $(CXXFLAGS) $(LDFLAGS) $(ROOTCFLAGS) $(ROOTLDFLAGS) $(ROOTL
 #---------------=============== MAIN MAKEFILE ===============---------------
 CC			= g++
 TARGET		= plotCaenGeckoLogs
-SOURCE		= plotCaenGeckoLogs.cpp TLogStorage.cpp TAsciiFileReader.cpp TSingleLogLine.cpp TLogFileReader.cpp cliParams.cpp cliParser.cpp
+SOURCE		= plotCaenGeckoLogs.cpp TLogPlotter.cpp TLogStorage.cpp TAsciiFileReader.cpp TSingleLogLine.cpp TLogFileReader.cpp cliParams.cpp cliParser.cpp
 
 INCLUDE	= -I./ $(AN_INCLUDE_DIR)  
 ## end more includes

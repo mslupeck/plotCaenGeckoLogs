@@ -12,6 +12,7 @@
 #include "cliParser.h"
 #include "TLogFileReader.h"
 #include "TLogStorage.h"
+#include "TLogPlotter.h"
 
 #include <TApplication.h>
 #include <TFile.h>
@@ -41,9 +42,12 @@ int main(int argc, char* argv[]){
 			TLogFileReader *lfr = new TLogFileReader();
 			lfr->ReadFile(inputPath);
 			//lfr->Print(cout);
-			TLogStorage *ls = new TLogStorage(lfr->GetStorage());
+			TLogStorage *ls = new TLogStorage(&(lfr->GetStorage()));
+			ls->FillHistos();
 			delete lfr;
-			// Do sth with ls ...
+			//ls->PrintContents();
+			TLogPlotter *lp = new TLogPlotter(ls);
+			lp->Plot();
 
 		cout << "Finished..." << endl;
 		theApp->Run();
