@@ -103,6 +103,8 @@ void TLogPlotter::Plot() {
 	vCol.push_back(kSpring+3);
 	vCol.push_back(kYellow+2);
 	vCol.push_back(kOrange+2);
+	vCol.push_back(kBlack);
+	vCol.push_back(kGray);
 
 	float lmargin = 0.1;
 	float rmargin = 0.2;
@@ -154,7 +156,7 @@ void TLogPlotter::Plot() {
 						grdummy->GetYaxis()->SetLabelSize(fontsize);
 						first = false;
 					}
-					lp->gr->Draw("LP sames");
+					lp->gr->Draw("L sames");
 					break;
 				}
 			}

@@ -9,6 +9,7 @@
 #define TLOGSTORAGE_H_
 
 #include <bits/stdc++.h> // sort
+#include <stdint.h>
 #include <vector>
 #include <iostream>
 #include <iomanip>

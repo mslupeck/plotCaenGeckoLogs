@@ -15,7 +15,7 @@ namespace std {
 
 class TLogFileReader : public TAsciiFileReader<TSingleLogLine> {
 private:
-	const int nCols = 10;
+	static const int nCols = 10;
 	void InitLutVectors();										// VIIH = virtual inherited, implemented here
 	void FillLutVectors();										// VIIH
 
