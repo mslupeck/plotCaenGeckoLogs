@@ -17,12 +17,17 @@ TLogPlotter::~TLogPlotter() {
 	// TODO Auto-generated destructor stub
 }
 
-void TLogPlotter::Plot() {
+void TLogPlotter::Plot(string &selParam, int t0) {
 	// Not really unique one by one, but rather each triplet of them is unique
 	vector<string> vUniqueParamName;
 	vector<string> vUniqueBoardName;
 	vector<int> vUniqueChannelNumber;
 	logStorage->GetUniques(vUniqueBoardName, vUniqueChannelNumber, vUniqueParamName);
+	// Select only a single parameter to plot
+	if(selParam.size() > 0){ // if selection was made in the CLI
+		vUniqueParamName.clear();
+		vUniqueParamName.push_back(selParam);
+	}
 
 	vector<LogChannel>* vLog = logStorage->GetLog();
 
@@ -74,7 +79,18 @@ void TLogPlotter::Plot() {
 		vvalMin.push_back(valMin);
 	}
 
-	// Offset all data in graphs so that it starts from 0
+	string xAxisTitle = "Time [h] since ";
+	time_t globMinTime = logStorage->GetGlobalMinTime();
+	if(t0 != -999999){ // if t0 set from CLI
+		globMinTime = t0;
+	}
+	// Lower the min time, so that it starts from the last full hour
+	uint32_t globTimeOffset = globMinTime%3600;
+	globMinTime = globMinTime - globTimeOffset;
+	xAxisTitle += ctime(&globMinTime);
+	cout << "  <I> TLogPlotter::Plot(): Global start time set to: " << globMinTime << "   -> " << ctime(&globMinTime) << endl;
+
+	// Offset all data in graphs so that it starts from 0 and is in hours
 	for(uint32_t ilog=0; ilog<vLog->size(); ilog++){
 		LogChannel* lc = &(vLog->at(ilog));
 		for(uint32_t ipar=0; ipar<vLog->at(ilog).vParam.size(); ipar++){
@@ -82,14 +98,12 @@ void TLogPlotter::Plot() {
 			for(uint32_t i=0; i<gr->GetN(); i++){
 				double x=0, y=0;
 				gr->GetPoint(i, x, y);
-				double newTime = x-logStorage->GetGlobalMinTime();
+				double newTime = x-globMinTime;
+				newTime /= 3600; // convert units [s -> h]
 				gr->SetPoint(i, newTime, y);
 			}
 		}
 	}
-	string xAxisTitle = "Time [s] since ";
-	time_t globMinTime = logStorage->GetGlobalMinTime();
-	xAxisTitle += ctime(&globMinTime);
 
 	vector<Color_t> vCol;
 	vCol.push_back(kRed);
@@ -110,7 +124,7 @@ void TLogPlotter::Plot() {
 	float rmargin = 0.2;
 	float bmargin = 0.1;
 	float tmargin = 0.07;
-	float fontsize = 0.045;
+	float fontsize = 0.035;
 
 	for(uint32_t iparUnique=0; iparUnique<vParName.size(); iparUnique++){
 		string* uniquePar = &(vParName.at(iparUnique));
@@ -137,7 +151,7 @@ void TLogPlotter::Plot() {
 					if(first){
 						TGraph *grdummy = new TGraph(2);
 						grdummy->SetPoint(0, 0, vvalMin.at(iparUnique));
-						grdummy->SetPoint(1, logStorage->GetGlobalMaxTime()-logStorage->GetGlobalMinTime(), vvalMax.at(iparUnique)*1.1);
+						grdummy->SetPoint(1, (logStorage->GetGlobalMaxTime()-globMinTime)/3600+1, vvalMax.at(iparUnique)*1.1);
 						grdummy->SetLineWidth(0);
 						grdummy->SetMarkerColor(kWhite);
 						grdummy->SetMarkerStyle(1);

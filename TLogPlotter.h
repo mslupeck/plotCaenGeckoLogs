@@ -25,7 +25,7 @@ public:
 	TLogPlotter(TLogStorage* ls);
 	virtual ~TLogPlotter();
 
-	void Plot();
+	void Plot(string &selParam, int t0);
 };
 
 } /* namespace std */

@@ -86,7 +86,7 @@ public:
 	TLogStorage(vector<TSingleLogLine> *vRawLog);
 	virtual ~TLogStorage();
 
-	int FillHistos();
+	int Fill();
 	void PrintStructure();
 	void PrintContents();
 

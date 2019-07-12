@@ -281,7 +281,7 @@ void TLogStorage::CreateGraphs(){
 	}
 }
 
-int TLogStorage::FillHistos(){
+int TLogStorage::Fill(){
 	FillStructure();
 	AnalyseMinMax();
 	CreateGraphs();

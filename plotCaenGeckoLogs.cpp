@@ -25,16 +25,16 @@ int main(int argc, char* argv[]){
 	cli.AddPar("m", "Mode of operation", true);
 	cli.GetModeList()->AddPar("default", "Default mode");
 	cli.AddPar("i", "Input directory or file", true);
-	cli.AddPar("o", "Output directory or file", false);
-	//cli.AddPar("v", "Verbosity level");
+	cli.AddPar("p", "Plot only parameter with this name [VMon, IMonH, ChStatus]", false);
+	cli.AddPar("t0", "Force the start time of the x-axis", false);
 	if(cli.Parse(argc, argv)!=0){
 		cli.PrintUsage(cout, "aliFitSimAnalysis");
 		return -1;
 	}
 
 	string inputPath = cli.GetParString("i");
-	string outputPath = cli.GetParString("o");
-	//int verbose = cli.GetParInt("v");
+	string selParam = cli.GetParString("p");
+	int t0 = cli.GetParInt("t0");
 	if(cli.GetParString("m").compare("default")==0){
 		TApplication *theApp = new TApplication("App", &argc, argv);	// needed to print interactive canvases and gui
 		theApp->SetIdleTimer(100000,"exit()"); 							// exit automatically after 100000s of being idle
@@ -43,11 +43,11 @@ int main(int argc, char* argv[]){
 			lfr->ReadFile(inputPath);
 			//lfr->Print(cout);
 			TLogStorage *ls = new TLogStorage(&(lfr->GetStorage()));
-			ls->FillHistos();
+			ls->Fill();
 			delete lfr;
 			//ls->PrintContents();
 			TLogPlotter *lp = new TLogPlotter(ls);
-			lp->Plot();
+			lp->Plot(selParam, t0);
 
 		cout << "Finished..." << endl;
 		theApp->Run();
