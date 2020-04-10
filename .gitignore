@@ -11,6 +11,8 @@ inputs/
 *.exe
 *.o
 *.so
+*.png
+*.root
 
 # Packages #
 ############
@@ -24,6 +26,7 @@ inputs/
 *.rar
 *.tar
 *.zip
+*.png
 
 # Logs and databases #
 ######################

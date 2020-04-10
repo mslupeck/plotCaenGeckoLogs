@@ -48,6 +48,7 @@ void TLogPlotter::Plot(string &selParam, int t0) {
 	}
 
 	// Find max and min values for each of the params for all possible channels
+	logStorage->AnalyseMinMax();
 	vector<float> vvalMax;
 	vector<float> vvalMin;
 	for(uint32_t iparUnique=0; iparUnique<vParName.size(); iparUnique++){
@@ -81,6 +82,9 @@ void TLogPlotter::Plot(string &selParam, int t0) {
 
 	string xAxisTitle = "Time [h] since ";
 	time_t globMinTime = logStorage->GetGlobalMinTime();
+	if(globMinTime < 0){ // time must never be negative, if so then somewhere there was an error
+		globMinTime = 0;
+	}
 	if(t0 != -999999){ // if t0 set from CLI
 		globMinTime = t0;
 	}

@@ -10,8 +10,8 @@
 namespace std {
 
 TLogStorage::TLogStorage(vector<TSingleLogLine> *vRawLog) {
-	globalMinTime = 0;
-	globalMaxTime = 0;
+	globalMinTime = -1;
+	globalMaxTime = -1;
 	this->vRawLog = vRawLog;
 	if(GenerateStructure() < 0){
 		return;
@@ -213,7 +213,9 @@ void TLogStorage::FillStructure(){
 						LogInfo* li = new LogInfo();
 						li->timeStamp = GetTime(rawTimeStamp);
 						li->value = rawValue;
-						lp->vVal.push_back(li);
+						if(li->timeStamp>0){
+							lp->vVal.push_back(li);
+						}
 						break;
 					}
 				}
@@ -242,6 +244,10 @@ void TLogStorage::AnalyseMinMax(){
 				if((lp->maxValue < li->value) || (lp->maxValue == -999)){
 					lp->maxValue = li->value;
 				}
+			}
+			if(lp->minTime < 0){
+				cout << "<E> TLogStorage::AnalyseMinMax(): " << ilog << "-" << ipar << ":" << lp->parName << endl;
+				return;
 			}
 		}
 	}
@@ -283,7 +289,6 @@ void TLogStorage::CreateGraphs(){
 
 int TLogStorage::Fill(){
 	FillStructure();
-	AnalyseMinMax();
 	CreateGraphs();
 
 	//Fill histos
@@ -317,14 +322,7 @@ void TLogStorage::PrintContents(){
 	cout << "  <I> TLogStorage::PrintContents(): vLog content" << endl;
 	for(uint32_t ilog=0; ilog<vLog.size(); ilog++){
 		LogChannel* lc = &(vLog.at(ilog));
-		cout << "      " << lc->boardName << " " << lc->channel << "    " << endl;
-		for(uint32_t ipar=0; ipar<vLog.at(ilog).vParam.size(); ipar++){
-			LogParam* lp = &(lc->vParam.at(ipar));
-			cout << "        " << lp->parName << endl;
-			for(uint32_t ival=0; ival<lp->vVal.size(); ival++){
-				cout << "          " << lp->vVal.at(ival)->timeStamp << ": " << lp->vVal.at(ival)->value << endl;
-			}
-		}
+		lc->PrintContents();
 	}
 }
 
@@ -339,11 +337,28 @@ void TLogStorage::GetUniques(vector<string> &vUniqueBoardName, vector<int> &vUni
 }
 
 time_t TLogStorage::GetGlobalMaxTime(){
+	if(globalMaxTime == -1){
+		AnalyseMinMax();
+	}
 	return globalMaxTime;
 }
 
 time_t TLogStorage::GetGlobalMinTime(){
+	if(globalMinTime == -1){
+		AnalyseMinMax();
+	}
 	return globalMinTime;
+}
+
+void LogChannel::PrintContents(){
+	cout << "      " << boardName << " " << channel << "    " << endl;
+	for(uint32_t ipar=0; ipar<vParam.size(); ipar++){
+		LogParam* lp = &(vParam.at(ipar));
+		cout << "        " << lp->parName << endl;
+		for(uint32_t ival=0; ival<lp->vVal.size(); ival++){
+			cout << "          " << lp->vVal.at(ival)->timeStamp << ": " << lp->vVal.at(ival)->value << endl;
+		}
+	}
 }
 
 } /* namespace std */

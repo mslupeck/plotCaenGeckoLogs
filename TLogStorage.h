@@ -61,6 +61,8 @@ struct LogChannel{
 			return l1.boardName < l2.boardName;
 		}
 	}
+
+	void PrintContents();
 };
 
 class TLogStorage {
@@ -79,7 +81,6 @@ private:
 	void SortStructure();
 	time_t GetTime(string& rawTimeStamp);
 	void FillStructure();
-	void AnalyseMinMax();
 	void CreateGraphs();
 
 public:
@@ -87,6 +88,7 @@ public:
 	virtual ~TLogStorage();
 
 	int Fill();
+	void AnalyseMinMax();
 	void PrintStructure();
 	void PrintContents();
 
